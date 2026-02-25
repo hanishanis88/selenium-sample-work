@@ -2,9 +2,9 @@ name: Selenium C# E2E Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   selenium-run:
