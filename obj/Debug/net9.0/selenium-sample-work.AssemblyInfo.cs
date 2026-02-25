@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("selenium-sample-work")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef7a08e6afc635eb91e8c91af0ab782c3a466a7e")]
 [assembly: System.Reflection.AssemblyProductAttribute("selenium-sample-work")]
 [assembly: System.Reflection.AssemblyTitleAttribute("selenium-sample-work")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
