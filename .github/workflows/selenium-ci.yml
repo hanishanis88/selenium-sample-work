@@ -1,0 +1,46 @@
+name: Selenium C# E2E Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  selenium-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Install Chrome
+        run: sudo apt-get install -y chromium-browser
+
+      - name: Run Selenium tests
+        run: |
+          # Set driver path if needed
+          export PATH=$PATH:/usr/lib/chromium-browser/
+          dotnet test --logger "trx;LogFileName=test_results.trx"
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: '**/TestResults/*.trx'
