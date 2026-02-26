@@ -14,22 +14,29 @@ namespace selenium_sample_work.Base
         {
             var options = new ChromeOptions();
 
-            // Headless if running in CI (GitHub Actions sets CI=true)
-            var isCI = Environment.GetEnvironmentVariable("CI") == "true";
+            // Detect CI (GitHub Actions sets CI=true)
+            bool isCI = Environment.GetEnvironmentVariable("CI") == "true";
+
             if (isCI)
             {
-                options.AddArgument("--headless");
+                options.AddArgument("--headless=new");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--disable-dev-shm-usage");
+                options.AddArgument("--window-size=1920,1080");
             }
 
             driver = new ChromeDriver(options);
 
-            // Optional: maximize window locally
+            // Explicit wait for page load
+            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
+
             if (!isCI)
             {
                 driver.Manage().Window.Maximize();
             }
+
+            // Navigate once per test
+            driver.Navigate().GoToUrl("https://www.saucedemo.com/");
         }
 
         [TearDown]

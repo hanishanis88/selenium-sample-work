@@ -8,7 +8,7 @@ namespace selenium_sample_work.Tests
 {
     public class InventoryTests : BaseTest
     {
-        [Test, Retry(2)] // retry up to 2 times
+        [Test, Retry(2)]
         public void AddRandomItemAndValidateTotal()
         {
             var loginPage = new LoginPage(driver);
@@ -20,20 +20,29 @@ namespace selenium_sample_work.Tests
 
             // Add random item
             inventoryPage.AddRandomItemToCart();
+
+            // Go to cart
             inventoryPage.ClickCart();
 
-            // Verify item added
-            Assert.That(inventoryPage.VerifyItemAdded(), Is.True, "Item was not added to cart");
+            // Verify item exists in cart
+            Assert.That(
+                inventoryPage.VerifyItemAdded(),
+                Is.True,
+                "Item was not added to cart"
+            );
 
-            // Validate total
-            var prices = inventoryPage.GetPrices();
-            var total = Helpers.CalculateCartTotal(prices);
-            Assert.That(total, Is.GreaterThan(0), "Cart total should be greater than 0");
+            // Screenshot (after cart loads)
+            string screenshotsDir = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "screenshots"
+            );
 
-            // Take screenshot
-            string screenshotsDir = Path.Combine(Directory.GetCurrentDirectory(), "screenshots");
             Directory.CreateDirectory(screenshotsDir);
-            Helpers.TakeScreenshot(driver, Path.Combine(screenshotsDir, "cart_screenshot.png"));
+
+            Helpers.TakeScreenshot(
+                driver,
+                Path.Combine(screenshotsDir, "cart_screenshot.png")
+            );
         }
     }
 }

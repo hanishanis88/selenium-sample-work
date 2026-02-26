@@ -30,7 +30,7 @@ namespace selenium_sample_work.Utilities
                 if (driver is ITakesScreenshot screenshotDriver)
                 {
                     Screenshot screenshot = screenshotDriver.GetScreenshot();
-                    screenshot.SaveAsFile(fileName); // save as .png by filename
+                    screenshot.SaveAsFile(fileName);
                 }
             }
             catch (Exception ex)
