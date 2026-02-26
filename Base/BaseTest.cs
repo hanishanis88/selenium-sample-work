@@ -2,50 +2,63 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.IO;
+using selenium_sample_work.Utilities;
 
 namespace selenium_sample_work.Base
 {
     public class BaseTest
     {
-        protected IWebDriver driver;
+        private IWebDriver driverInstance;
+
+        protected IWebDriver Driver => driverInstance;
 
         [SetUp]
         public void SetUp()
         {
             var options = new ChromeOptions();
 
-            // Detect CI (GitHub Actions sets CI=true)
+            // Headless if running in CI
             bool isCI = Environment.GetEnvironmentVariable("CI") == "true";
-
             if (isCI)
             {
-                options.AddArgument("--headless=new");
+                options.AddArgument("--headless");
                 options.AddArgument("--no-sandbox");
                 options.AddArgument("--disable-dev-shm-usage");
-                options.AddArgument("--window-size=1920,1080");
             }
 
-            driver = new ChromeDriver(options);
+            driverInstance = new ChromeDriver(options);
 
-            // Explicit wait for page load
-            driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
-
+            // Maximize locally
             if (!isCI)
             {
-                driver.Manage().Window.Maximize();
+                driverInstance.Manage().Window.Maximize();
             }
-
-            // Navigate once per test
-            driver.Navigate().GoToUrl("https://www.saucedemo.com/");
         }
 
         [TearDown]
         public void TearDown()
         {
-            if (driver != null)
+            try
             {
-                driver.Quit();
-                driver.Dispose();
+                // Take screenshot if test failed
+                if (TestContext.CurrentContext.Result.Outcome.Status == NUnit.Framework.Interfaces.TestStatus.Failed)
+                {
+                    string screenshotsDir = Path.Combine(Directory.GetCurrentDirectory(), "screenshots");
+                    Directory.CreateDirectory(screenshotsDir);
+                    string screenshotPath = Path.Combine(screenshotsDir, $"{TestContext.CurrentContext.Test.Name}.png");
+                    Helpers.TakeScreenshot(driverInstance, screenshotPath);
+                    Console.WriteLine($"Screenshot saved to {screenshotPath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to take screenshot: {ex.Message}");
+            }
+            finally
+            {
+                driverInstance?.Quit();
+                driverInstance?.Dispose();
             }
         }
     }

@@ -9,18 +9,18 @@ namespace selenium_sample_work.Tests
         [Test]
         public void ValidUser_Should_LoginSuccessfully()
         {
-            var loginPage = new LoginPage(driver);
+            var loginPage = new LoginPage(Driver);
 
             loginPage.Navigate();
             loginPage.Login("standard_user", "secret_sauce");
 
-            Assert.That(driver.Url, Does.Contain("inventory"));
+            Assert.That(Driver.Url, Does.Contain("inventory"));
         }
 
         [Test]
         public void LockedOutUser_Should_ShowErrorMessage()
         {
-            var loginPage = new LoginPage(driver);
+            var loginPage = new LoginPage(Driver);
             loginPage.Navigate();
 
             // Use locked out user credentials

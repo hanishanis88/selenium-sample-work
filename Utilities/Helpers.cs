@@ -1,42 +1,37 @@
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 
 namespace selenium_sample_work.Utilities
 {
     public static class Helpers
     {
-        private static readonly Random random = new Random();
-
-        // Generate a random index
-        public static int GenerateRandomIndex(int length)
+        public static void TakeScreenshot(IWebDriver driver, string filePath)
         {
-            return random.Next(length);
+            if (driver is ITakesScreenshot screenshotDriver)
+            {
+                string directory = Path.GetDirectoryName(filePath);
+                if (!Directory.Exists(directory))
+                    Directory.CreateDirectory(directory);
+
+                if (Path.GetExtension(filePath).ToLower() != ".png")
+                    filePath += ".png";
+
+                Screenshot screenshot = screenshotDriver.GetScreenshot();
+                screenshot.SaveAsFile(filePath);
+            }
         }
 
-        // Calculate total price from a list of doubles
+        public static int GenerateRandomIndex(int max)
+        {
+            return new Random().Next(0, max);
+        }
+
         public static double CalculateCartTotal(List<double> prices)
         {
             return prices.Sum();
-        }
-
-        // Take screenshot
-        public static void TakeScreenshot(IWebDriver driver, string fileName)
-        {
-            try
-            {
-                if (driver is ITakesScreenshot screenshotDriver)
-                {
-                    Screenshot screenshot = screenshotDriver.GetScreenshot();
-                    screenshot.SaveAsFile(fileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to take screenshot: {ex.Message}");
-            }
         }
     }
 }
